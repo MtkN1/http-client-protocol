@@ -12,3 +12,60 @@ dependencies = []
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    {include-group = "lint"},
+    {include-group = "test"},
+]
+lint = [
+    "ruff>=0.11.13",
+]
+test = [
+    "pytest>=8.4.0",
+    "pytest-cov>=6.1.1",
+    "pytest-github-actions-annotate-failures>=0.3.0",
+]
+
+[tool.pyright]
+autoSearchPaths = false
+extraPaths = []
+include = ["src", "tests"]
+reportShadowedImports = "warning"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+include = ["pyproject.toml", "src/**/*.py", "tests/**/*.py"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # https://docs.astral.sh/ruff/linter/#rule-selection
+    "D203",
+    "D213",
+    # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+    "D206",
+    "D300",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "COM812",
+    "COM819",
+    "ISC001",
+    "ISC002",
+    "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/
+    "S101", # https://docs.astral.sh/ruff/rules/assert/
+]
