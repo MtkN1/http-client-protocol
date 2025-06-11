@@ -1,0 +1,14 @@
+[project]
+name = "http-client-protocol"
+version = "0.1.0"
+description = "Python HTTP Client API Specification"
+readme = "README.md"
+authors = [
+    { name = "MtkN1", email = "51289448+MtkN1@users.noreply.github.com" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
