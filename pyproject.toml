@@ -14,18 +14,45 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
+ci = [
+    "pytest-github-actions-annotate-failures>=0.3.0",
+]
+coverage = [
+    "coverage[toml]>=7.8.2",
+]
 dev = [
+    {include-group = "coverage"},
+    {include-group = "ide"},
     {include-group = "lint"},
     {include-group = "test"},
+]
+ide = [
+    "pytest-cov>=6.1.1",
 ]
 lint = [
     "ruff>=0.11.13",
 ]
 test = [
     "pytest>=8.4.0",
-    "pytest-cov>=6.1.1",
-    "pytest-github-actions-annotate-failures>=0.3.0",
 ]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    'class .*\bProtocol\):',
+    '@(abc\.)?abstractmethod',
+]
+fail_under = 100
+show_missing = true
+skip_empty = true
+
+[tool.coverage.html]
+skip_empty = true
 
 [tool.pyright]
 autoSearchPaths = false
@@ -59,13 +86,19 @@ ignore = [
     "Q003",
     "COM812",
     "COM819",
-    "ISC001",
-    "ISC002",
     "E501",
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
+    "D100", # https://docs.astral.sh/ruff/rules/undocumented-public-module/
+    "D101", # https://docs.astral.sh/ruff/rules/undocumented-public-class/
+    "D102", # https://docs.astral.sh/ruff/rules/undocumented-public-method/
+    "D103", # https://docs.astral.sh/ruff/rules/undocumented-public-function/
     "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/
+    "D105", # https://docs.astral.sh/ruff/rules/undocumented-magic-method/
+    "D106", # https://docs.astral.sh/ruff/rules/undocumented-public-nested-class/
+    "D107", # https://docs.astral.sh/ruff/rules/undocumented-public-init/
+    "PLR2004", # https://docs.astral.sh/ruff/rules/magic-value-comparison/
     "S101", # https://docs.astral.sh/ruff/rules/assert/
 ]

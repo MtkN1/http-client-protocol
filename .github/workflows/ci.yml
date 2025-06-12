@@ -15,13 +15,35 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Run build
         run: uv build
+  coverage:
+    runs-on: ubuntu-24.04
+    needs: test
+    if: ${{ !cancelled() }}
+    steps:
+      - name: Check test result
+        if: contains(needs.test.result, 'failure')
+        run: exit 1
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Set up Python environment
+        run: uv sync --no-dev --group coverage
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coverage.*
+          path: ${{ runner.temp }}
+      - name: Extract coverage files
+        run: for file in "$RUNNER_TEMP"/coverage.*; do tar -xf "$file"; done
+      - name: Combine coverage files
+        run: uv run coverage combine
+      - name: Report coverage
+        run: uv run coverage report --format markdown >> "$GITHUB_STEP_SUMMARY"
   lint:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - name: Set up Python environment
-        run: uv sync --group lint
+        run: uv sync --no-dev --group lint
       - name: Run linters
         run: |
           uv run ruff check --output-format=github || exit_status=1
@@ -39,9 +61,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Set up Python environment
-        run: uv sync --group test
+        run: uv sync --no-dev --group ci --group coverage --group test
       - name: Run tests
-        run: uv run pytest
+        run: uv run coverage run --parallel-mode -m pytest
+      - name: Archive a coverage file
+        run: tar -cf "$RUNNER_TEMP/coverage.tar" .coverage.*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage.${{ strategy.job-index }}
+          path: ${{ runner.temp }}/coverage.tar
   typecheck:
     runs-on: ubuntu-24.04
     steps:
@@ -49,6 +77,6 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Set up Python environment
         run: |
-          uv sync --group test
+          uv sync --no-dev --group test
           echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
       - uses: jakebailey/pyright-action@v2

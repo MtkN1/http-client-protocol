@@ -98,36 +98,42 @@ version = "0.1.0"
 source = { editable = "." }
 
 [package.dev-dependencies]
+ci = [
+    { name = "pytest-github-actions-annotate-failures" },
+]
+coverage = [
+    { name = "coverage", extra = ["toml"] },
+]
 dev = [
+    { name = "coverage", extra = ["toml"] },
     { name = "pytest" },
     { name = "pytest-cov" },
-    { name = "pytest-github-actions-annotate-failures" },
     { name = "ruff" },
+]
+ide = [
+    { name = "pytest-cov" },
 ]
 lint = [
     { name = "ruff" },
 ]
 test = [
     { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-github-actions-annotate-failures" },
 ]
 
 [package.metadata]
 
 [package.metadata.requires-dev]
+ci = [{ name = "pytest-github-actions-annotate-failures", specifier = ">=0.3.0" }]
+coverage = [{ name = "coverage", extras = ["toml"], specifier = ">=7.8.2" }]
 dev = [
+    { name = "coverage", extras = ["toml"], specifier = ">=7.8.2" },
     { name = "pytest", specifier = ">=8.4.0" },
     { name = "pytest-cov", specifier = ">=6.1.1" },
-    { name = "pytest-github-actions-annotate-failures", specifier = ">=0.3.0" },
     { name = "ruff", specifier = ">=0.11.13" },
 ]
+ide = [{ name = "pytest-cov", specifier = ">=6.1.1" }]
 lint = [{ name = "ruff", specifier = ">=0.11.13" }]
-test = [
-    { name = "pytest", specifier = ">=8.4.0" },
-    { name = "pytest-cov", specifier = ">=6.1.1" },
-    { name = "pytest-github-actions-annotate-failures", specifier = ">=0.3.0" },
-]
+test = [{ name = "pytest", specifier = ">=8.4.0" }]
 
 [[package]]
 name = "iniconfig"
