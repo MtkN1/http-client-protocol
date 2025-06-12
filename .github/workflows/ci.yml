@@ -32,7 +32,10 @@ jobs:
           pattern: coverage.*
           path: ${{ runner.temp }}
       - name: Extract coverage files
-        run: for file in "$RUNNER_TEMP"/coverage.*; do tar -xf "$file"; done
+        run: |
+          for tarfile in "$RUNNER_TEMP"/coverage.*/coverage.tar; do
+            tar -xf "$tarfile"
+          done
       - name: Combine coverage files
         run: uv run coverage combine
       - name: Report coverage
