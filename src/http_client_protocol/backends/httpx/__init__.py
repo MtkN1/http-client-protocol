@@ -1,4 +1,4 @@
-"""urllib backend."""
+"""httpx backend."""
 
 __all__ = [
     "AsyncHTTPClient",
