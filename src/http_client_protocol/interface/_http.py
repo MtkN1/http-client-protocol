@@ -21,3 +21,14 @@ class HTTPClientInterface(Protocol):
         headers: HeadersType | None = None,
         content: bytes | None = None,
     ) -> HTTPResponseInterface: ...
+
+
+class AsyncHTTPClientInterface(Protocol):
+    async def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        headers: HeadersType | None = None,
+        content: bytes | None = None,
+    ) -> HTTPResponseInterface: ...
