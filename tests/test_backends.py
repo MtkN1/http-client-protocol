@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import urllib.request
 from typing import TYPE_CHECKING
 
 import pytest
@@ -22,17 +23,20 @@ def test_urllib_type() -> None:
 @pytest.mark.parametrize(
     ("test_input", "expected"),
     [
-        ("/hello/200", 200),
-        ("/hello/404", 404),
-        ("/hello/500", 500),
+        (("/hello/200", None), 200),
+        (("/hello/404", None), 404),
+        (("/hello/500", urllib.request.build_opener()), 500),
     ],
 )
-def test_http_client(
-    testing_server: TestServer, test_input: str, expected: int
+def test_urllib_client(
+    testing_server: TestServer,
+    test_input: tuple[str, urllib.request.OpenerDirector | None],
+    expected: int,
 ) -> None:
-    url = str(testing_server.make_url(test_input))
+    path, opener = test_input
+    url = str(testing_server.make_url(path))
 
-    client = http_client_protocol.backends.urllib.HTTPClient()
+    client = http_client_protocol.backends.urllib.HTTPClient(opener)
     response = client.request("GET", url)
 
     assert response.status_code == expected
