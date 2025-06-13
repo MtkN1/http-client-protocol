@@ -33,6 +33,8 @@ lint = [
     "ruff>=0.11.13",
 ]
 test = [
+    "aiohttp>=3.12.12",
+    "anyio>=4.9.0",
     "pytest>=8.4.0",
 ]
 
